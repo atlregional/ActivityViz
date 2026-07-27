@@ -366,22 +366,30 @@ var BarChartGrp = {
             .select("#" + chart.chartName + "_bar")
             .remove();
 
-          d3.select("#" + id + "-container")
+          var chartContainerId = chart.chartName + "_bar";
+          var chartContainerEl = document.getElementById(chartContainerId);
+          if (chartContainerEl && chartContainerEl.parentNode) {
+            chartContainerEl.parentNode.removeChild(chartContainerEl);
+          }
+
+          var chartContainer = d3
+            .select("#" + id + "-container")
             .append("div")
-            .attr("id", chart.chartName + "_bar")
+            .attr("id", chartContainerId)
             .attr(
               "class",
               "grouped-bar-chart__container col-sm-" + widthOfEachCol
-            )
+            );
+
+          chartContainer
             .append("div")
             .attr("class", "barcharttitle")
             .text(chartDataContainer.length > 1 ? chart.chartName : "");
 
-          d3.select("#" + chart.chartName + "_bar")
+          var svgElement = chartContainer
             .append("svg")
-            .attr("id", id + "_grouped-barchart");
-
-          var chartId = "#" + chart.chartName + "_bar " + " svg";
+            .attr("id", id + "_grouped-barchart")
+            .node();
           var options = {
             pivotData: pivotData,
             showPercentages: showPercentages,
@@ -399,7 +407,7 @@ var BarChartGrp = {
             //maxVal: independentScale != undefined && $.inArray(chart.chartName,independentScale)==-1 ? getMax:chart.maxVal,
             // minVal: independentScale != undefined && $.inArray(chart.chartName,independentScale)==-1? getMin:chart.minVal
           };
-          grouped_barchart(chartId, chart.data, options, id);
+          grouped_barchart(svgElement, chart.data, options, id);
           initializeMuchOfUI(chart);
 
           setDataSpecificDOM(chart);
