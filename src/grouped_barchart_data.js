@@ -36,6 +36,13 @@ var BarChartGrp = {
     var independentScale;
 
     var chartDataContainer = [];
+
+    function safeId(text) {
+      return text.replace(/[^A-Za-z0-9_-]/g, "_");
+    }
+
+    var chartSelector = "#" + safeId(id) + "_grouped-barchart";
+
     function createGrouped(callback) {
       "use strict";
       chartDataContainer = [];
@@ -362,15 +369,10 @@ var BarChartGrp = {
           )
             widthOfEachCol = ChartWidthOverride[i];
 
+          var chartContainerId = safeId(chart.chartName) + "_bar";
           d3.select("#" + id + "-container")
-            .select("#" + chart.chartName + "_bar")
+            .select("#" + chartContainerId)
             .remove();
-
-          var chartContainerId = chart.chartName + "_bar";
-          var chartContainerEl = document.getElementById(chartContainerId);
-          if (chartContainerEl && chartContainerEl.parentNode) {
-            chartContainerEl.parentNode.removeChild(chartContainerEl);
-          }
 
           var chartContainer = d3
             .select("#" + id + "-container")
@@ -386,10 +388,11 @@ var BarChartGrp = {
             .attr("class", "barcharttitle")
             .text(chartDataContainer.length > 1 ? chart.chartName : "");
 
-          var svgElement = chartContainer
+          var svgId = safeId(id) + "_grouped-barchart";
+          chartContainer
             .append("svg")
-            .attr("id", id + "_grouped-barchart")
-            .node();
+            .attr("id", svgId)
+            .attr("class", "grouped-barchart-svg");
           var options = {
             pivotData: pivotData,
             showPercentages: showPercentages,
@@ -407,7 +410,8 @@ var BarChartGrp = {
             //maxVal: independentScale != undefined && $.inArray(chart.chartName,independentScale)==-1 ? getMax:chart.maxVal,
             // minVal: independentScale != undefined && $.inArray(chart.chartName,independentScale)==-1? getMin:chart.minVal
           };
-          grouped_barchart(svgElement, chart.data, options, id);
+          var chartSelector = "#" + svgId;
+          grouped_barchart(chartSelector, chart.data, options, id);
           initializeMuchOfUI(chart);
 
           setDataSpecificDOM(chart);

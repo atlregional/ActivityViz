@@ -17,6 +17,14 @@ function grouped_barchart(id, data, options, divid) {
   var barsWrapRectId = divid + "-barsWrapRectRSG";
   var barsWrapRectSelector = "#" + barsWrapRectId;
 
+  function normalizeSvgId(idValue) {
+    if (typeof idValue !== "string") return idValue;
+    return idValue.charAt(0) === "#" ? idValue : "#" + idValue + "_grouped-barchart";
+  }
+
+  var svgSelector = normalizeSvgId(id);
+  var chartSelector = svgSelector;
+
   var chartConfig = getChartConfig(options);
 
   function getChartConfig(options, maxTextWidth) {
@@ -83,7 +91,7 @@ function grouped_barchart(id, data, options, divid) {
     };
   }
 
-  svgChart = d3.select(id);
+  svgChart = d3.select(chartSelector);
 
   createEmptyChart();
 
