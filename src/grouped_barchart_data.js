@@ -300,7 +300,8 @@ var BarChartGrp = {
               chartData = [];
 
               subGroupSet.forEach(function(subGroupName) {
-                var rawSubGroupObject = rawChartData[chartName][subGroupName];
+                var rawSubGroupObject =
+                  (rawChartData[chartName] && rawChartData[chartName][subGroupName]) || {};
                 var newSubGroupObject = {
                   key: subGroupName,
                   values: []
@@ -401,7 +402,7 @@ var BarChartGrp = {
           grouped_barchart(chartId, chart.data, options, id);
           initializeMuchOfUI(chart);
 
-          setDataSpecificDOM();
+          setDataSpecificDOM(chart);
         });
       } //end readInDataCallback
 
@@ -471,7 +472,7 @@ var BarChartGrp = {
         $("#" + id + "-toggle-stacked").prop("checked", showAsStacked);
       }
 
-      function setDataSpecificDOM() {
+      function setDataSpecificDOM(chart) {
         var mainGroupInTitle = d3.selectAll(
           "#" + id + "-div .grouped-barchart-main-group"
         );
@@ -487,10 +488,14 @@ var BarChartGrp = {
         }
 
         var exampleIndex = pivotData ? 1 : 0;
+        var exampleKey = "";
+        if (chart && chart.data && chart.data[exampleIndex]) {
+          exampleKey = chart.data[exampleIndex].key;
+        }
 
         d3.selectAll(
           "#" + id + "-div .grouped-barchart-sub-group-example"
-        ).html(chartData[exampleIndex].key);
+        ).html(exampleKey);
       }
     } //end createGrouped
     createGrouped();
