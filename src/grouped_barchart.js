@@ -233,8 +233,9 @@ function grouped_barchart(id, data, options, divid) {
   function getChartGenerator(chartConfig) {
     return function chartGenerator() {
       var colorScale = d3.scale.category20();
-      var obj = $(id + " .nv-controlsWrap .nv-legend-symbol")[0];
-      var shwBarSpace = $(obj).css("fill-opacity") == 0;
+      var svgElement = typeof id === "string" ? d3.select(id) : d3.select(id);
+      var obj = svgElement.select(".nv-controlsWrap .nv-legend-symbol").node();
+      var shwBarSpace = obj ? d3.select(obj).style("fill-opacity") == 0 : false;
 
       var nvd3Chart = getChart(showAsVertical).groupSpacing(
         shwBarSpace ? 0.2 : BARSPACING
